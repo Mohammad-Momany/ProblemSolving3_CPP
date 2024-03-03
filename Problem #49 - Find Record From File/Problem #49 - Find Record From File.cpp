@@ -6,6 +6,9 @@
 
 using namespace std;
 
+
+const string ClientsFileName = "../Problem #47 - Add Record to File/MyFile.txt";
+
 struct stClientBankData
 {
     string AccountNumber;
@@ -81,41 +84,46 @@ vector <stClientBankData> CreateClientDataList(vector <string> vClientsData)
     return vClientBankData;
 }
 
-void PrintClientRecord(stClientBankData Client) {
-    cout << "| " << setw(15) << left << Client.AccountNumber;
-    cout << "| " << setw(10) << left << Client.PinCode;
-    cout << "| " << setw(40) << left << Client.Name;
-    cout << "| " << setw(12) << left << Client.Phone;
-    cout << "| " << setw(12) << left << Client.AccountBalance;
-}
+bool FindClientByAccountNumber(string AccountNumber, stClientBankData& Client) {
 
-void PrintAllClientsData(vector<stClientBankData> vClients) {
-    cout << "\n\t\t\t\t\tClient List (" << vClients.size() << ") Client(s).";
-    cout << "\n_______________________________________________________________________________________________________________________\n" << endl;
-    cout << "| " << left << setw(15) << "Account Number";
-    cout << "| " << left << setw(10) << "Pin Code";
-    cout << "| " << left << setw(40) << "Client Name";
-    cout << "| " << left << setw(12) << "Phone";
-    cout << "| " << left << setw(12) << "Balance";
-    cout << "\n_______________________________________________________________________________________________________________________\n" << endl;
+    vector<stClientBankData> vClients = CreateClientDataList(LoadClientsDataFromFile(ClientsFileName));
 
-    for (stClientBankData Client : vClients) {
-        PrintClientRecord(Client);
-        cout << endl;
+    for (stClientBankData C : vClients) {
+        if (C.AccountNumber == AccountNumber) {
+            Client = C;
+            return true;
+        }
     }
-
-    cout << "\n_______________________________________________________________________________________________________________________\n" << endl;
+    return false;
 }
 
-int main()
-{
-    vector<stClientBankData> vClientData;
+string ReadClientAccountNumber() {
+    string AccountNumber = "";
+    cout << "\nPlease enter Account Number: ";
+    cin >> AccountNumber;
+    return AccountNumber;
+}
 
-    vClientData = CreateClientDataList(LoadClientsDataFromFile("../Problem #47 - Add Record to File/MyFile.txt"));
+void PrintClientRecord(stClientBankData Client) {
+    cout << "\n\nThe following is the extracted client record:\n";
+    cout << "\nAccount Number: " << Client.AccountNumber;
+    cout << "\nPin Code      : " << Client.PinCode;
+    cout << "\nName          : " << Client.Name;
+    cout << "\nPhone         : " << Client.Phone;
+    cout << "\nAccount Balance: " << Client.AccountBalance;
+}
 
-    PrintAllClientsData(vClientData);
+int main() {
+    stClientBankData Client;
+    string AccountNumber = ReadClientAccountNumber();
+
+    if (FindClientByAccountNumber(AccountNumber, Client)) {
+        PrintClientRecord(Client);
+    }
+    else {
+        cout << "\nClient with Account Number (" << AccountNumber << ") is Not Found!";
+    }
 
     system("pause>0");
     return 0;
-
 }
