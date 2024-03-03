@@ -5,11 +5,11 @@ using namespace std;
 
 string JoinString(vector<string> vString, string Delim) {
     string S1 = "";
-    int vStringLength = vString.size() - 1;
+    vector<string>::iterator LastElement = vString.end() - 1;
 
     for (string& s : vString) {
 
-        if (vString[vStringLength] == s)
+        if (*LastElement == s)
         {
             S1 = S1 + s;
             continue;
