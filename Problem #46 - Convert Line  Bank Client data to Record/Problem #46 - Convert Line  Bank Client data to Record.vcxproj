@@ -21,10 +21,9 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{1ff0b5bc-05e7-4aa1-adef-9cc19def2f68}</ProjectGuid>
-    <RootNamespace>Problem45ReadBankClientdata</RootNamespace>
+    <ProjectGuid>{3ef5da1a-e33f-4e91-b48b-24ca174dfc10}</ProjectGuid>
+    <RootNamespace>Problem46ConvertLineBankClientdatatoRecord</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>Problem #45 - Convert Client Bank Data Record To Line</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -128,7 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Problem #45 - Read Bank Client data.cpp" />
+    <ClCompile Include="Problem #46 - Convert Line  Bank Client data to Record.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
