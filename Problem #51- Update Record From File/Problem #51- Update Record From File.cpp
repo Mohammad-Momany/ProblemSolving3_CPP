@@ -17,6 +17,12 @@ struct stClientBankData
     double AccountBalance;
 };
 
+enum ActionType
+{
+    Get,
+    Update,
+    Delete
+};
 vector<string> SplitString(string S1, string Delim) {
     vector<string> vString;
     short pos = 0;
@@ -117,12 +123,25 @@ bool FindClientByAccountNumber(string AccountNumber, stClientBankData& Client) {
     return false;
 }
 
-string ReadClientAccountNumber() {
-    string AccountNumber = "";
-    cout << "\nPlease enter Account Number: ";
-    cin >> AccountNumber;
-    return AccountNumber;
+stClientBankData ChangeClientRecord(string AccountNumber) {
+    stClientBankData Client;
+    Client.AccountNumber = AccountNumber;
+
+    cout << "\n\nEnter PinCode? ";
+    getline(cin >> ws, Client.PinCode);
+
+    cout << "Enter Name? ";
+    getline(cin, Client.Name);
+
+    cout << "Enter Phone? ";
+    getline(cin, Client.Phone);
+
+    cout << "Enter AccountBalance? ";
+    cin >> Client.AccountBalance;
+
+    return Client;
 }
+
 
 void PrintClientRecord(stClientBankData Client) {
     cout << "\n\nThe following is the extracted client record:\n";
@@ -133,7 +152,7 @@ void PrintClientRecord(stClientBankData Client) {
     cout << "\nAccount Balance: " << Client.AccountBalance;
 }
 
-vector<stClientBankData> SaveClientsDataToFile(string FileName, vector<stClientBankData> vClients, string accountNumber) {
+vector<stClientBankData> SaveClientsDataToFile(string FileName, vector<stClientBankData> vClients, string accountNumber, ActionType actionType) {
     fstream MyFile;
     MyFile.open(FileName, ios::out); //overwrite
     string DataLine;
@@ -141,9 +160,20 @@ vector<stClientBankData> SaveClientsDataToFile(string FileName, vector<stClientB
     if (MyFile.is_open()) {
         for (stClientBankData C : vClients) {
             if (C.AccountNumber != accountNumber) {
-                // Only write records that are not marked for delete.
                 DataLine = ConvertRecordToLine(C);
                 MyFile << DataLine << endl;
+            }
+            else
+            {
+                if (actionType == ActionType::Update)
+                {
+                    C = ChangeClientRecord(accountNumber);
+
+                    DataLine = ConvertRecordToLine(C);
+                }
+                else if (actionType == ActionType::Delete) {
+                    DataLine = "";
+                }
             }
         }
         MyFile.close();
@@ -151,33 +181,39 @@ vector<stClientBankData> SaveClientsDataToFile(string FileName, vector<stClientB
     return vClients;
 }
 
-bool DeleteClientByAccountNumber(string AccountNumber, vector<stClientBankData>& vClients) {
+bool UpdateClientByAccountNumber(string AccountNumber, vector<stClientBankData>& vClients) {
     stClientBankData Client;
+    char Answer = 'n';
 
     if (FindClientByAccountNumber(AccountNumber, Client)) {
         PrintClientRecord(Client);
+        bool Answer = RepeatProgrom("\n\nAre you sure you want to update this client? y/n ? ");
 
-        do
-        {
-            SaveClientsDataToFile(ClientsFileName, vClients, Client.AccountNumber); // Refresh Clients
-
-            cout << "\n\nClient Deleted Successfully.";
+        if (Answer) {
+            SaveClientsDataToFile(ClientsFileName, vClients, AccountNumber);
+            cout << "\n\nClient Updated Successfully.";
             return true;
-
-        } while (RepeatProgrom("\nClient Added Successfully, do you want to add more clients? Y/N? "));
-
-
+        }
+    }
+    else {
         cout << "\nClient with Account Number (" << AccountNumber << ") is Not Found!";
         return false;
     }
 }
 
+
+    string ReadClientAccountNumber() {
+        string AccountNumber = "";
+        cout << "\nPlease enter Account Number: ";
+        cin >> AccountNumber;
+        return AccountNumber;
+    }
 int main() {
 
     vector<stClientBankData> vClients = CreateClientDataList(LoadClientsDataFromFile(ClientsFileName));;
     string AccountNumber = ReadClientAccountNumber();
 
-    DeleteClientByAccountNumber(AccountNumber, vClients);
+    UpdateClientByAccountNumber(AccountNumber, vClients);
 
     system("pause>0");
     return 0;
